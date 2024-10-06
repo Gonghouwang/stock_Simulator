@@ -1,24 +1,13 @@
-# stock_simulator
+<h1 align="center">大模型模拟股票市场</h1>
 
-## Project setup
-```
-npm install
-```
+弘毅大软第一组2021HYAP01的项目前端仓库
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 项目环境
+| 模块/组件      | 版本       | 描述       |
+|:-----------|:---------|:---------|
+| Node.js    | 12.22.12 | 运行环境     |
+| Axios      | 1.7.7    | 网络请求库    |
+| Vue        | 2.6.14   | 前端框架     |
+| Vuex       | 3.6.2    | 前端状态管理框架 |
+| Vue-router | 3.6.5    | 前端路由框架   |
+| Element-UI | 2.15.14  | UI组件库    |
