@@ -13,6 +13,11 @@ const router = new VueRouter({
             component:() => import("@/views/home.vue"),
         },
         {
+            path:"/news",
+            name:"news",
+            component:() => import("@/views/news.vue"),
+        },
+        {
             path:"/login",
             name:"Login",
             component:() => import("@/views/login.vue"),
