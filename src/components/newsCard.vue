@@ -3,7 +3,12 @@
       <h3>{{ article.title }}</h3>
       <p>{{ article.description }}</p>
       <small>{{ article.publishedAt }}</small> <br/>
-      <button @click="viewDetails">查看详情</button>
+      <!-- <button @click="viewDetails">查看详情</button> -->
+      <el-collapse>
+        <el-collapse-item title="点击查看详情" name="1">
+          <div>{{ article.detail }}</div>
+        </el-collapse-item>
+      </el-collapse>
     </div>
   </template>
   

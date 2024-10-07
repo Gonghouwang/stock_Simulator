@@ -33,11 +33,13 @@ export default {
       articles: [{
         title: '456', 
         description: '123456789', 
-        publishedAt: '1234-56-78'
+        publishedAt: '1234-56-78',
+        detail:'xijie'
       }, {
         title: '789', 
         description: '123456789', 
-        publishedAt: '1234-56-78'
+        publishedAt: '1234-56-78',
+        detail:'xijie'
       }]
     }
   }
