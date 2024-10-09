@@ -13,14 +13,26 @@
         </span>
       </div>
       <div class="input-data">
-        <input type="text" required />
+        <input
+            type="text"
+            v-model="username"
+            @focus="focusedField = 'username'"
+            @blur="focusedField = ''"
+            :class="{ 'is-focused': focusedField === 'username', 'is-valid': username !== '' }"
+        />
         <div class="underline"></div>
-        <label>Username</label>
+        <label :class="{ 'is-focused': focusedField === 'username', 'is-valid': username !== '' }">Username</label>
       </div>
       <div class="input-data">
-        <input type="text" required />
+        <input
+            type="text"
+            v-model="password"
+            @focus="focusedField = 'password'"
+            @blur="focusedField = ''"
+            :class="{ 'is-focused': focusedField === 'password', 'is-valid': password !== '' }"
+        />
         <div class="underline"></div>
-        <label>Password</label>
+        <label :class="{ 'is-focused': focusedField === 'password', 'is-valid': password !== '' }">Password</label>
       </div>
       <div class="input-data">
         <a href="#" class="login">Sign in</a>
@@ -34,12 +46,12 @@
         </span>
       </div>
       <div class="input-data">
-        <input type="text" required />
+        <input type="text" v-model="this.username" />
         <div class="underline"></div>
         <label>Username</label>
       </div>
       <div class="input-data">
-        <input type="text" required />
+        <input type="text" v-model="this.password" />
         <div class="underline"></div>
         <label>Password</label>
       </div>
@@ -56,16 +68,21 @@ export default {
   data(){
     return{
       ifLogin: true,
+      focusedField: '',
+      username: '',
+      password: ''
     }
   },
   methods:{
     changeLogin(){
       this.ifLogin = !this.ifLogin;
+      this.username = '';
+      this.password = '';
     },
     goBack(){
       this.$router.go(-1);
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -135,8 +152,8 @@ export default {
 }
 
 /* 输入框获得焦点时，输入框的值合法时，label上移25px，改变字号和颜色 */
-.wrapper .input-data input:focus~label,
-.wrapper .input-data input:valid~label {
+.wrapper .input-data input.is-focused~label,
+.wrapper .input-data input.is-valid~label {
   transform: translateY(-25px);
   font-size: 15px;
   color: #2c6fdb;
@@ -162,8 +179,8 @@ export default {
   transition: all 0.3s ease;
 }
 
-.wrapper .input-data input:focus~.underline,
-.wrapper .input-data input:valid~.underline {
+.wrapper .input-data input.is-focused~.underline,
+.wrapper .input-data input.is-valid~.underline {
   transform: scaleX(1);
 }
 
