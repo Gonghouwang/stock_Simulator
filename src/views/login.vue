@@ -35,7 +35,7 @@
         <label :class="{ 'is-focused': focusedField === 'password', 'is-valid': password !== '' }">Password</label>
       </div>
       <div class="input-data">
-        <a href="#" class="login">Sign in</a>
+        <a href="#" class="login" @click="handleLogin()">Sign in</a>
       </div>
     </div>
     <div class="wrapper" v-if="!ifLogin">
@@ -56,13 +56,15 @@
         <label>Password</label>
       </div>
       <div class="input-data">
-        <a href="#" class="login">Create Account</a>
+        <a href="#" class="login" @click="handleRegister()">Create Account</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { register } from "@/api/login";
+
 export default {
   name: 'loginPage',
   data(){
@@ -70,10 +72,37 @@ export default {
       ifLogin: true,
       focusedField: '',
       username: '',
-      password: ''
+      password: '',
+      redirect: '', //路由
     }
   },
   methods:{
+    handleLogin(){
+      if(this.username.trim().length !== 0 && this.password.trim().length !== 0) {
+        this.$store.dispatch("Login", this.username, this.password).then(() => {
+              this.$message.success("Login successful");
+              this.$router.push({ path: this.redirect || "/" });
+            }).catch((err) => {
+              console.log(err);
+            });
+      }
+      else{
+        this.$message({
+          message: 'Please enter your username and password',
+          type: 'warning'
+        });
+      }
+    },
+    handleRegister(){
+      if(this.username.trim().length !== 0 && this.password.trim().length !== 0) {
+        register(this.username, this.password).then(() => {
+          this.$message.success("Registration successful");
+          this.ifLogin = true;
+        }).catch((err) => {
+          console.log(err);
+        })
+      }
+    },
     changeLogin(){
       this.ifLogin = !this.ifLogin;
       this.username = '';
@@ -82,6 +111,14 @@ export default {
     goBack(){
       this.$router.go(-1);
     },
+  },
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect;
+      },
+      immediate: true
+    }
   },
 }
 </script>
