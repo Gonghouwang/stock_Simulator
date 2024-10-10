@@ -77,7 +77,7 @@ export default {
     }
   },
   methods:{
-    handleLogin(){
+    handleLogin(){ //登录
       if(this.username.trim().length !== 0 && this.password.trim().length !== 0) {
         this.$store.dispatch("Login", this.username, this.password).then(() => {
               this.$message.success("Login successful");
@@ -93,11 +93,11 @@ export default {
         });
       }
     },
-    handleRegister(){
+    handleRegister(){ //注册
       if(this.username.trim().length !== 0 && this.password.trim().length !== 0) {
         register(this.username, this.password).then(() => {
           this.$message.success("Registration successful");
-          this.ifLogin = true;
+          this.changeLogin();
         }).catch((err) => {
           console.log(err);
         })
