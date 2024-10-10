@@ -46,14 +46,26 @@
         </span>
       </div>
       <div class="input-data">
-        <input type="text" v-model="this.username" />
+        <input
+            type="text"
+            v-model="username"
+            @focus="focusedField = 'username'"
+            @blur="focusedField = ''"
+            :class="{ 'is-focused': focusedField === 'username', 'is-valid': username !== '' }"
+        />
         <div class="underline"></div>
-        <label>Username</label>
+        <label :class="{ 'is-focused': focusedField === 'username', 'is-valid': username !== '' }">Username</label>
       </div>
       <div class="input-data">
-        <input type="text" v-model="this.password" />
+        <input
+            type="text"
+            v-model="password"
+            @focus="focusedField = 'password'"
+            @blur="focusedField = ''"
+            :class="{ 'is-focused': focusedField === 'password', 'is-valid': password !== '' }"
+        />
         <div class="underline"></div>
-        <label>Password</label>
+        <label :class="{ 'is-focused': focusedField === 'password', 'is-valid': password !== '' }">Password</label>
       </div>
       <div class="input-data">
         <a href="#" class="login" @click="handleRegister()">Create Account</a>
