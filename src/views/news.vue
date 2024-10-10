@@ -34,7 +34,17 @@ export default {
   },
   data() {
     return {
-      articles: [],
+      articles: [{
+        title: '456',
+        description: '123456789',
+        publishedAt: '1234-56-78',
+        detail:'xijie'
+      }, {
+        title: '789',
+        description: '123456789',
+        publishedAt: '1234-56-78',
+        detail:'xijie'
+      }],
     }
   },
   created() {
@@ -61,6 +71,6 @@ export default {
   background-color: #89c4fd;
   height: 1.2px;
   width: 80%;
-  margin: 0 auto;
+  margin: 0 auto 10px;
 }
 </style>

@@ -56,6 +56,9 @@ export default {
       ]
     }
   },
+  created() {
+    this.getStockList();
+  },
   methods: {
     priceClass(stock) { //涨跌颜色
       if (stock.changePercent < 0) {
