@@ -7,7 +7,7 @@
                 <h2>{{ account.username }}</h2>
                 <div>
                     <p>总资产: {{ account.balance }} 元</p>
-                    <p>总收益: {{ account.profit }} 元</p>
+                    <p :class="priceClass(account.profit)">总收益: {{ account.profit }} 元</p>
                 </div>
             </div>
 
@@ -62,7 +62,7 @@ export default {
             account: {
                 username: '用户名',
                 balance: 100000, // 总资产
-                profit: 12000,    // 总收益
+                profit: 2000,    // 总收益
                 tradeInfo: [
                     {
                         "stockId": 1,
@@ -88,22 +88,67 @@ export default {
             },
             transactions: [
                 {
-                    "userId": 1,
-                    "stockId": 2,
-                    "stockName": "美团",
+                    "userId": 3,
+                    "stockId": 5,
+                    "stockName": "阿里巴巴",
                     "tradeType": 0,
-                    "tradeQuantity": 29,
-                    "tradePrice": 29,
-                    "tradeDate": "2023-11-22"
+                    "tradeQuantity": 5,
+                    "tradePrice": 192.0,
+                    "tradeDate": "2024-10-11 22:23:52"
                 },
                 {
-                    "userId": 1,
-                    "stockId": 3,
-                    "stockName": "腾讯",
-                    "tradeType": 1,
-                    "tradeQuantity": 39,
-                    "tradePrice": 58,
-                    "tradeDate": "2025-05-19"
+                    "userId": 3,
+                    "stockId": 6,
+                    "stockName": "百度",
+                    "tradeType": 0,
+                    "tradeQuantity": 6,
+                    "tradePrice": 155.5,
+                    "tradeDate": "2024-10-11 22:45:25"
+                },
+                {
+                    "userId": 3,
+                    "stockId": 7,
+                    "stockName": "腾讯控股",
+                    "tradeType": 0,
+                    "tradeQuantity": 7,
+                    "tradePrice": 360.5,
+                    "tradeDate": "2024-10-11 22:46:22"
+                },
+                {
+                    "userId": 3,
+                    "stockId": 8,
+                    "stockName": "京东",
+                    "tradeType": 0,
+                    "tradeQuantity": 8,
+                    "tradePrice": 73.5,
+                    "tradeDate": "2024-10-11 22:46:30"
+                },
+                {
+                    "userId": 3,
+                    "stockId": 9,
+                    "stockName": "美团",
+                    "tradeType": 0,
+                    "tradeQuantity": 9,
+                    "tradePrice": 250.5,
+                    "tradeDate": "2024-10-11 22:46:36"
+                },
+                {
+                    "userId": 3,
+                    "stockId": 10,
+                    "stockName": "小米",
+                    "tradeType": 0,
+                    "tradeQuantity": 10,
+                    "tradePrice": 23.9,
+                    "tradeDate": "2024-10-11 22:47:44"
+                },
+                {
+                    "userId": 3,
+                    "stockId": 5,
+                    "stockName": "阿里巴巴",
+                    "tradeType": 0,
+                    "tradeQuantity": 3,
+                    "tradePrice": 181.0,
+                    "tradeDate": "2024-10-11 23:13:09"
                 }
             ],
         };
@@ -125,7 +170,7 @@ export default {
             if (type == 0) {
                 return '买入'
             }
-            else if(type == 1){
+            else if (type == 1) {
                 return '卖出'
             }
         },
