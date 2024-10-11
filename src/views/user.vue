@@ -14,7 +14,7 @@
             <!-- 持仓信息 -->
             <div class="stock-holdings">
                 <h2>持仓信息</h2>
-                <el-table :data="holdings">
+                <el-table :data="account.tradeInfo">
                     <el-table-column prop="stockName" label="股票名称"></el-table-column>
                     <el-table-column prop="quantity" label="当前持仓量"></el-table-column>
                     <el-table-column prop="price" label="当前价格"></el-table-column>
@@ -37,7 +37,7 @@
                         :key="index">
                         <div>
                             <p>股票代码：{{ transaction.stockId }}</p>
-                            <p>类型: {{ transaction.tradeType }}</p>
+                            <p>类型: {{ showType(transaction.tradeType) }}</p>
                             <p>价格: {{ transaction.tradePrice }}</p>
                             <p>数量: {{ transaction.tradeQuantity }}</p>
                             <p>交易时间: {{ transaction.tradeDate }}</p>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { user, userInfo, userTradeHistory } from "@/api/user";
+import { userInfo, userTradeHistory } from "@/api/user";
 import navMenu from "@/components/navmenu.vue";
 export default {
     name: "userPage",
@@ -62,30 +62,30 @@ export default {
             account: {
                 username: '用户名',
                 balance: 100000, // 总资产
-                profit: 12000    // 总收益
+                profit: 12000,    // 总收益
+                tradeInfo: [
+                    {
+                        "stockId": 1,
+                        "stockName": "美团",
+                        "cost": 8000,
+                        "quantity": 40,
+                        "price": 25,
+                        "value": 10000,
+                        "earn": 1000,
+                        "profit": 3000
+                    },
+                    {
+                        "stockId": 2,
+                        "stockName": "腾讯",
+                        "cost": 9000,
+                        "quantity": 20,
+                        "price": 40,
+                        "value": 8000,
+                        "earn": 0,
+                        "profit": -1000
+                    }
+                ],
             },
-            holdings: [
-                {
-                    "stockId": 1,
-                    "stockName": "美团",
-                    "cost": 8000,
-                    "quantity": 40,
-                    "price": 25,
-                    "value": 10000,
-                    "earn": 1000,
-                    "profit": 3000
-                },
-                {
-                    "stockId": 2,
-                    "stockName": "腾讯",
-                    "cost": 9000,
-                    "quantity": 20,
-                    "price": 40,
-                    "value": 8000,
-                    "earn": 0,
-                    "profit": -1000
-                }
-            ],
             transactions: [
                 {
                     "userId": 1,
@@ -110,7 +110,7 @@ export default {
     },
     created() {
         this.getUserInfo();
-        this.getUser();
+        //this.getUser();
         this.getHistory();
     },
     methods: {
@@ -121,16 +121,24 @@ export default {
                 return 'price-up';
             }
         },
-        getUserInfo() { //获取用戶简要信息
-            userInfo().then(response => {
-                this.holdings = response.tradeInfo;
-            })
+        showType(type) {//0买入1，卖出
+            if (type == 0) {
+                return '买入'
+            }
+            else if(type == 1){
+                return '卖出'
+            }
         },
-        getUser() { //获取用戶简要信息
-            user().then(response => {
+        getUserInfo() { //获取用戶全部信息
+            userInfo().then(response => {
                 this.account = response.data;
             })
         },
+        // getUser() { //获取用戶简要信息
+        //     user().then(response => {
+        //         this.account = response.data;
+        //     })
+        // },
         getHistory() { //交易历史
             userTradeHistory().then(response => {
                 this.transactions = response.data.history;
