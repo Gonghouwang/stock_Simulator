@@ -69,7 +69,7 @@ export default {
       this.$router.push('/login');
     },
     goUser(){
-      this.$router.push('/userInfo')
+      this.$router.push('/user')
     }
   }
 }

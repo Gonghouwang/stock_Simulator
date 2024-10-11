@@ -23,9 +23,9 @@ const router = new VueRouter({
             component:() => import("@/views/login.vue"),
         },
         {
-            path:"/userInfo",
-            name:"userInfo",
-            component:() => import("@/views/userInfo.vue"),
+            path:"/user",
+            name:"user",
+            component:() => import("@/views/user.vue"),
         },
     ]
 })
