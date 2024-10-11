@@ -20,7 +20,7 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        Login({ commit }, username, password) {
+        Login({ commit }, { username, password } ) {
             return new Promise((resolve, reject) => {
                 login(username, password).then(response => {
                     localStorage.setItem('token', response.data.token);

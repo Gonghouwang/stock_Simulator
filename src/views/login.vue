@@ -91,7 +91,7 @@ export default {
   methods:{
     handleLogin(){ //登录
       if(this.username.trim().length !== 0 && this.password.trim().length !== 0) {
-        this.$store.dispatch("Login", this.username, this.password).then(() => {
+        this.$store.dispatch("Login", {username: this.username, password: this.password} ).then(() => {
               this.$message.success("Login successful");
               this.$router.push({ path: this.redirect || "/" });
             }).catch((err) => {
