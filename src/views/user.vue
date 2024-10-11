@@ -108,6 +108,11 @@ export default {
             ],
         };
     },
+    created() {
+        this.getUserInfo();
+        this.getUser();
+        this.getHistory();
+    },
     methods: {
         priceClass(profit) { //涨跌颜色
             if (profit < 0) {
@@ -127,7 +132,7 @@ export default {
             })
         },
         getHistory() { //交易历史
-            userStockTradeHistory().then(response => {
+            userTradeHistory().then(response => {
                 this.transactions = response.data.history;
             })
         }
