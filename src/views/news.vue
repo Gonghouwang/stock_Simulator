@@ -35,12 +35,17 @@ export default {
   data() {
     return {
       articles: [{
-        title: '456',
+        title: 'new1',
         description: '123456789',
         publishedAt: '1234-56-78',
         detail:'xijie'
       }, {
-        title: '789',
+        title: 'new2',
+        description: '123456789',
+        publishedAt: '1234-56-78',
+        detail:'xijie'
+      }, {
+        title: 'news3',
         description: '123456789',
         publishedAt: '1234-56-78',
         detail:'xijie'
