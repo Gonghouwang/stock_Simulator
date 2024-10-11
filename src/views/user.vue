@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { user, userInfo, userStockTradeHistory } from "@/api/user";
+import { user, userInfo, userTradeHistory } from "@/api/user";
 import navMenu from "@/components/navmenu.vue";
 export default {
     name: "userPage",
