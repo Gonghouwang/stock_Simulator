@@ -2,7 +2,7 @@
   <div>
     <nav-menu style="margin-bottom: 10px"></nav-menu>
     <div class="stock-container">
-      <el-card class="stock-card" v-for="(stock, index) in stocks" :key="index">
+      <el-card class="stock-card" v-for="(stock, index) in stocks" :key="index" @click.native="goDetail(stock.stockId)">
         <div class="stock-title">
           <span class="title"> {{ stock.stockName }} ({{ stock.stockCode }}) </span>
           <span class="current-price" :class="priceClass(stock)">{{ stock.price }}</span>
@@ -71,6 +71,9 @@ export default {
       stockList().then(response => {
         this.stocks = response.data.stocks;
       })
+    },
+    goDetail(stockId){
+      this.$router.push({ path: `/stock/${stockId}` });
     }
   }
 }
