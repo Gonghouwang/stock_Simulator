@@ -53,32 +53,8 @@ export default {
       buyNum: 1,
       sellNum: 1,
       klineData: {},
-      stockInfo: {
-        "stockName": "百度",
-        "stockCode": 58,
-        "price": 41,
-        "closingPrice": 94,
-        "maxPrice": 43,
-        "minPrice": 2,
-        "changePercent": 12,
-        "volume": 73
-      },
-      tradeInfo: {
-        "userName": "ghw",
-        "balance": 50000,
-        "tradeInfo": [
-          {
-            "stockId": 1,
-            "stockName": "百度",
-            "cost": 3200,
-            "quantity": 10,
-            "price": 30,
-            "value": 3000,
-            "earn": 0,
-            "profit": -200
-          }
-        ]
-      },
+      stockInfo: {},
+      tradeInfo: {},
       klineParams:{
         width: 920,
         height: 400,
@@ -158,6 +134,7 @@ export default {
           type: 'warning'
         });
       })
+      this.getInfo();
     },
     sell(){
       sellStock(this.stockId, this.sellNum).then(() => {
@@ -169,6 +146,7 @@ export default {
           type: 'warning'
         });
       })
+      this.getInfo();
     },
   },
 }

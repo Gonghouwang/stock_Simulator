@@ -19,7 +19,7 @@ const router = new VueRouter({
             name:"stock",
             component:() => import("@/views/stock.vue"),
             meta:{
-
+                requiresAuth: true
             },
         },
         {

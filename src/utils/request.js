@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 创建 axios 实例
 const service = axios.create({
-    baseURL: 'http://localhost:8080/api', // 后端的基础请求地址
+    baseURL: 'http://47.115.213.200:8081/api', // 后端的基础请求地址
     timeout: 5000 // 请求超时时间
 });
 

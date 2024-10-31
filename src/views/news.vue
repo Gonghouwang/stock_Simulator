@@ -34,22 +34,7 @@ export default {
   },
   data() {
     return {
-      articles: [{
-        title: 'new1',
-        description: '123456789',
-        publishedAt: '1234-56-78',
-        detail:'xijie'
-      }, {
-        title: 'new2',
-        description: '123456789',
-        publishedAt: '1234-56-78',
-        detail:'xijie'
-      }, {
-        title: 'news3',
-        description: '123456789',
-        publishedAt: '1234-56-78',
-        detail:'xijie'
-      }],
+      articles: [],
     }
   },
   created() {

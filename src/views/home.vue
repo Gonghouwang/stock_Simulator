@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading.fullscreen="isLoading">
     <nav-menu style="margin-bottom: 10px"></nav-menu>
     <div class="stock-container">
       <el-card class="stock-card" v-for="(stock, index) in stocks" :key="index" @click.native="goDetail(stock.stockId)">
@@ -30,30 +30,8 @@ export default {
   },
   data(){
     return{
-      stocks: [
-        {
-          "stockId": 1,
-          "stockName": "百度",
-          "stockCode": "A41",
-          "price": 13874.5,
-          "closingPrice": 13974.2,
-          "maxPrice": 14012.2,
-          "minPrice": 13231.1,
-          "changePercent": -0.007,
-          "volume": 6712
-        },
-        {
-          "stockId": 2,
-          "stockName": "美团",
-          "stockCode": "B42",
-          "price": 13874.5,
-          "closingPrice": 13974.2,
-          "maxPrice": 14012.2,
-          "minPrice": 13231.1,
-          "changePercent": -0.007,
-          "volume": 6712
-        }
-      ]
+      stocks: [],
+      isLoading: true
     }
   },
   created() {
@@ -70,6 +48,7 @@ export default {
     getStockList(){ //获取主页股票列表，后续挂载到created
       stockList().then(response => {
         this.stocks = response.data.stocks;
+        this.isLoading = false;
       })
     },
     goDetail(stockId){
