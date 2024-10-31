@@ -103,8 +103,34 @@ export default {
   methods:{
     requestData(){
       stockHistory(this.stockIdStr).then(res => {
-        this.klineData = res.data.klines;
-        this.$refs.callMethods.kline.chartMgr.getChart().updateDataAndDisplay(res.data.klines.lines); //强制更改缓存中的lines值,防止显示不同步
+        this.klineData = {
+          lines: res.data.klines.lines.map(line => [
+            new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
+            line.openPrice,
+            line.maxPrice,
+            line.minPrice,
+            line.closePrice,
+            line.volume
+          ]),
+          depths: {
+            asks: res.data.klines.depths.asks.map(ask => [
+              ask.price,
+              ask.volume
+            ]),
+            bids: res.data.klines.depths.bids.map(bid => [
+              bid.price,
+              bid.volume
+            ])
+          }
+        }
+        this.$refs.callMethods.kline.chartMgr.getChart().updateDataAndDisplay(res.data.klines.lines.map(line => [
+          new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
+          line.openPrice,
+          line.maxPrice,
+          line.minPrice,
+          line.closePrice,
+          line.volume
+        ])); //强制更改缓存中的lines值,防止显示不同步
       })
     },
     refreshKlineData(option){
