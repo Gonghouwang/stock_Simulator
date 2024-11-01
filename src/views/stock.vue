@@ -11,20 +11,23 @@
         <div class="info">
           <span style="font-weight: bold">账户信息 </span>
           <span>余额: {{ tradeInfo.balance }}</span>
+          <span>当前股价: {{ stockInfo.price}}</span>
           <span>持股数量: {{ tradeInfo.tradeInfo[0].quantity }}</span>
-          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value }}</span>
-          <span>持仓盈亏: {{ tradeInfo.tradeInfo[0].profit }}</span>
+          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value.toFixed(2) }}</span>
+          <span>总投入: {{ tradeInfo.tradeInfo[0].cost.toFixed(2) }}</span>
+          <span>获利: {{ tradeInfo.tradeInfo[0].earn.toFixed(2) }}</span>
+          <span>总盈亏: {{ (tradeInfo.tradeInfo[0].profit).toFixed(2) }}</span>
         </div>
       </div>
       <div class="trade">
         <span style="font-weight: bold">股票交易</span>
         <div>
-<!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">买入股票</span>-->
+          <!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">买入股票</span>-->
           <el-input-number v-model="buyNum" :min="1" size="small"></el-input-number>
           <el-button type="primary" size="small" plain @click="buy()">买入股票</el-button>
         </div>
         <div>
-<!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">卖出股票</span>-->
+          <!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">卖出股票</span>-->
           <el-input-number v-model="sellNum" :min="1" size="small"></el-input-number>
           <el-button type="primary" size="small" plain @click="sell()">卖出股票</el-button>
         </div>
@@ -46,8 +49,8 @@ export default {
     'nav-menu': navMenu,
     vueKline,
   },
-  data(){
-    return{
+  data() {
+    return {
       stockId: 0,
       stockIdStr: null,
       buyNum: 1,
@@ -56,7 +59,7 @@ export default {
       klineData: {},
       stockInfo: {},
       tradeInfo: {},
-      klineParams:{
+      klineParams: {
         width: 920,
         height: 400,
         theme: "light",            // 主题颜色
@@ -74,11 +77,11 @@ export default {
     this.getInfo();
     this.getStockInfo();
   },
-  mounted(){
+  mounted() {
     this.refreshKlineData(300000);
   },
-  methods:{
-    requestData(){
+  methods: {
+    requestData() {
       this.isLoading = true;
       stockHistory(this.stockIdStr).then(res => {
         this.klineData = {
@@ -115,20 +118,20 @@ export default {
       })
       this.isLoading = false;
     },
-    refreshKlineData(option){
+    refreshKlineData(option) {
       console.log(option)
-      if (option === 300000){ //如果时间等于15分钟
+      if (option === 300000) { //如果时间等于15分钟
         this.requestData();
       }
     },
-    getStockInfo(){
+    getStockInfo() {
       stockHistory(this.stockIdStr).then(res => {
         this.stockInfo = res.data.stockSummary;
       })
     },
-    getInfo(){
+    getInfo() {
       userStockInfo(this.stockIdStr).then(res => {
-        if(res.data.tradeInfo.length === 0){
+        if (res.data.tradeInfo.length === 0) {
           this.tradeInfo = {
             userName: res.data.userName,
             balance: res.data.balance,
@@ -140,35 +143,47 @@ export default {
               }
             ]
           }
-        }
-        else{
+        } else {
           this.tradeInfo = res.data
         }
       })
     },
-    buy(){
-      buyStock(this.stockId, this.buyNum).then(() => {
-        this.$message.success("Stock purchase successful");
-      }).catch((err) => {
-        console.log(err);
-        this.$message({
-          message: 'Not enough balance',
-          type: 'warning'
-        });
-      })
-      this.getInfo();
+    buy() {
+      this.isLoading = true; // 设置为加载状态
+      buyStock(this.stockId, this.buyNum)
+          .then(() => {
+            this.$message.success("Stock purchase successful");
+            return this.getInfo(); // 在成功后更新信息
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message({
+              message: 'Not enough balance',
+              type: 'warning'
+            });
+          })
+          .finally(() => {
+            this.isLoading = false; // 在结束时关闭加载状态
+          });
     },
-    sell(){
-      sellStock(this.stockId, this.sellNum).then(() => {
-        this.$message.success("Stock sale successful");
-      }).catch((err) => {
-        console.log(err);
-        this.$message({
-          message: 'Not enough shares',
-          type: 'warning'
-        });
-      })
-      this.getInfo();
+
+    sell() {
+      this.isLoading = true; // 设置为加载状态
+      sellStock(this.stockId, this.sellNum)
+          .then(() => {
+            this.$message.success("Stock sale successful");
+            return this.getInfo(); // 在成功后更新信息
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message({
+              message: 'Not enough shares',
+              type: 'warning'
+            });
+          })
+          .finally(() => {
+            this.isLoading = false; // 在结束时关闭加载状态
+          });
     },
   },
 }
@@ -180,29 +195,35 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-.el-divider{
+
+.el-divider {
   background-color: #89c4fd;
   height: 1.2px;
 }
-.el-input-number{
+
+.el-input-number {
   margin-right: 8px;
 }
-.stock{
+
+.stock {
   width: 60%;
 }
-.user-info{
+
+.user-info {
   width: 60%;
   margin-top: 5px;
   margin-bottom: 30px;
 }
-.info{
+
+.info {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   margin-top: 40px;
 }
-.trade{
+
+.trade {
   width: 60%;
   display: flex;
   flex-wrap: wrap;
