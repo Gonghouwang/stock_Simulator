@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading.fullscreen="this.isLoading">
     <nav-menu></nav-menu>
     <div class="stock-container">
       <div class="stock">
@@ -52,6 +52,7 @@ export default {
       stockIdStr: null,
       buyNum: 1,
       sellNum: 1,
+      isLoading: true,
       klineData: {},
       stockInfo: {},
       tradeInfo: {},
@@ -60,8 +61,8 @@ export default {
         height: 400,
         theme: "light",            // 主题颜色
         language: "zh-cn",        //语言
-        ranges: ["1w", "1d", "1h", "30m", "15m", "5m", "1m", "line"],  // 聚合选项
-        intervalTime: 50000,       // k线更新周期 毫秒
+        ranges: ["1d", "2h", "30m", "5m"],  // 聚合选项
+        intervalTime: 3000,       // k线更新周期 毫秒
         depthWidth: 50,           // 深度图宽度
         count: 2                  //显示指标数量 默认两个
       }
@@ -74,10 +75,11 @@ export default {
     this.getStockInfo();
   },
   mounted(){
-    this.refreshKlineData(900000);// 进入页面时执行,默认聚合时间900000毫秒(15分钟)
+    this.refreshKlineData(300000);
   },
   methods:{
     requestData(){
+      this.isLoading = true;
       stockHistory(this.stockIdStr).then(res => {
         this.klineData = {
           lines: res.data.klines.lines.map(line => [
@@ -99,18 +101,23 @@ export default {
             ])
           }
         }
-        this.$refs.callMethods.kline.chartMgr.getChart().updateDataAndDisplay(res.data.klines.lines.map(line => [
-          new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
-          line.openPrice,
-          line.maxPrice,
-          line.minPrice,
-          line.closePrice,
-          line.volume
-        ])); //强制更改缓存中的lines值,防止显示不同步
+        this.$nextTick(() => {
+          console.log("nextTick")
+          this.$refs.callMethods.kline.chartMgr.getChart().updateDataAndDisplay(res.data.klines.lines.map(line => [
+            new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
+            line.openPrice,
+            line.maxPrice,
+            line.minPrice,
+            line.closePrice,
+            line.volume
+          ])); //强制更改缓存中的lines值,防止显示不同步
+        });
       })
+      this.isLoading = false;
     },
     refreshKlineData(option){
-      if (option===900000){ //如果时间等于15分钟
+      console.log(option)
+      if (option === 300000){ //如果时间等于15分钟
         this.requestData();
       }
     },
@@ -121,7 +128,22 @@ export default {
     },
     getInfo(){
       userStockInfo(this.stockIdStr).then(res => {
-        this.tradeInfo = res.data;
+        if(res.data.tradeInfo.length === 0){
+          this.tradeInfo = {
+            userName: res.data.userName,
+            balance: res.data.balance,
+            tradeInfo: [
+              {
+                quantity: 0,
+                value: 0,
+                profit: 0,
+              }
+            ]
+          }
+        }
+        else{
+          this.tradeInfo = res.data
+        }
       })
     },
     buy(){
