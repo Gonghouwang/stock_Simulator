@@ -30,7 +30,7 @@
                         <template slot-scope="scope">
                             <!-- 根据盈亏动态设置样式 -->
                             <span :class="priceClass(scope.row.profit)">
-                                {{ scope.row.profit }} 元
+                                {{ (scope.row.profit).toFixed(2) }} 元
                             </span>
                         </template>
                     </el-table-column>
