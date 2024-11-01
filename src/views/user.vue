@@ -17,8 +17,16 @@
                 <el-table :data="account.tradeInfo">
                     <el-table-column prop="stockName" label="股票名称"></el-table-column>
                     <el-table-column prop="quantity" label="当前持仓量"></el-table-column>
-                    <el-table-column prop="price" label="当前价格"></el-table-column>
-                    <el-table-column label="盈亏">
+                  <el-table-column prop="price" label="当前价格"></el-table-column>
+                  <el-table-column label="总市值">
+                    <template slot-scope="scope">
+                      {{ (scope.row.price * scope.row.quantity).toFixed(2) }} 元
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="cost" label="总投入"></el-table-column>
+                  <el-table-column prop="earn" label="获利"></el-table-column>
+
+                    <el-table-column label="总盈亏">
                         <template slot-scope="scope">
                             <!-- 根据盈亏动态设置样式 -->
                             <span :class="priceClass(scope.row.profit)">
