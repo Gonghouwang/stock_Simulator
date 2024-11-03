@@ -9,9 +9,9 @@
         <el-menu-item index="/" style="margin-left: 2vw">home</el-menu-item>
         <el-menu-item index="/news">news</el-menu-item>
       </el-col>
-      <el-col span="8" style="display: flex; justify-content: center; ">
+      <el-col span="8" style="display: flex; justify-content: center; "  @click.stop="goHome()">
         <div>
-          <img src="../assets/logo.svg" alt="logo" style="padding-top: 12px; color: #409EFF">
+          <img class="stock-name-link" src="../assets/logo.svg" alt="logo" style="padding-top: 12px; color: #409EFF">
         </div>
         <span style="padding-top: 14px; padding-left: 10px; display: flex">SmartStockSim</span>
       </el-col>
@@ -60,6 +60,10 @@ export default {
     }
   },
   methods:{
+    goHome() {
+      confirm("back home!");
+      this.$router.push({ path: `/` });
+    },
     logout(){
       if(confirm("Are you sure you want to logout?")){
         this.$store.commit('logout');
@@ -175,5 +179,9 @@ export default {
 /* button click effect*/
 .Btn:active {
   transform: translate(2px ,2px);
+}
+.stock-name-link {
+  color: #409EFF;
+  cursor: pointer;
 }
 </style>

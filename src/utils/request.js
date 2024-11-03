@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from "@/router";
 
 // 创建 axios 实例
 const service = axios.create({
@@ -27,6 +28,9 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     (response) => {
+        if (response.status===401){
+            router.push('/login');
+        }
         // 可以在这里统一处理响应数据
         return response.data;
     },
