@@ -4,19 +4,17 @@
     <div class="stock-container">
       <div class="stock">
         <h2 style="margin: 15px 0">{{ stockInfo.stockName }} ({{ stockInfo.stockCode }})</h2>
-        <vue-kline :klineParams="klineParams" :klineData="klineData" ref="callMethods" @refreshKlineData="refreshKlineData"></vue-kline>
+        <vue-kline :klineParams="klineParams" :klineData="klineData" ref="callMethods"
+                   @refreshKlineData="refreshKlineData"></vue-kline>
       </div>
       <div class="user-info">
         <el-divider content-position="left"><span style="font-size: 18px; font-weight: bold">操作</span></el-divider>
         <div class="info">
           <span style="font-weight: bold">账户信息 </span>
           <span>余额: {{ tradeInfo.balance }}</span>
-          <span>当前股价: {{ stockInfo.price}}</span>
           <span>持股数量: {{ tradeInfo.tradeInfo[0].quantity }}</span>
-          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value.toFixed(2) }}</span>
-          <span>总投入: {{ tradeInfo.tradeInfo[0].cost.toFixed(2) }}</span>
-          <span>获利: {{ tradeInfo.tradeInfo[0].earn.toFixed(2) }}</span>
-          <span>总盈亏: {{ (tradeInfo.tradeInfo[0].profit).toFixed(2) }}</span>
+          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value }}</span>
+          <span>持仓盈亏: {{ tradeInfo.tradeInfo[0].profit }}</span>
         </div>
       </div>
       <div class="trade">
@@ -39,9 +37,9 @@
 <script>
 import navMenu from "@/components/navmenu.vue";
 import vueKline from "vue-kline";
-import { userStockInfo } from "@/api/user"
-import { buyStock, sellStock } from "@/api/trade"
-import { stockHistory } from "@/api/stock";
+import {userStockInfo} from "@/api/user"
+import {buyStock, sellStock} from "@/api/trade"
+import {stockHistory} from "@/api/stock";
 
 export default {
   name: "stockPage",
@@ -149,41 +147,28 @@ export default {
       })
     },
     buy() {
-      this.isLoading = true; // 设置为加载状态
-      buyStock(this.stockId, this.buyNum)
-          .then(() => {
-            this.$message.success("Stock purchase successful");
-            return this.getInfo(); // 在成功后更新信息
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message({
-              message: 'Not enough balance',
-              type: 'warning'
-            });
-          })
-          .finally(() => {
-            this.isLoading = false; // 在结束时关闭加载状态
-          });
+      buyStock(this.stockId, this.buyNum).then(() => {
+        this.$message.success("Stock purchase successful");
+      }).catch((err) => {
+        console.log(err);
+        this.$message({
+          message: 'Not enough balance',
+          type: 'warning'
+        });
+      })
+      this.getInfo();
     },
-
     sell() {
-      this.isLoading = true; // 设置为加载状态
-      sellStock(this.stockId, this.sellNum)
-          .then(() => {
-            this.$message.success("Stock sale successful");
-            return this.getInfo(); // 在成功后更新信息
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message({
-              message: 'Not enough shares',
-              type: 'warning'
-            });
-          })
-          .finally(() => {
-            this.isLoading = false; // 在结束时关闭加载状态
-          });
+      sellStock(this.stockId, this.sellNum).then(() => {
+        this.$message.success("Stock sale successful");
+      }).catch((err) => {
+        console.log(err);
+        this.$message({
+          message: 'Not enough shares',
+          type: 'warning'
+        });
+      })
+      this.getInfo();
     },
   },
 }
