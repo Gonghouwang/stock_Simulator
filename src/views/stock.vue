@@ -1,5 +1,5 @@
 <template>
-  <div v-loading.fullscreen="this.isLoading">
+  <div >
     <nav-menu></nav-menu>
     <div class="stock-container">
       <div class="stock">
@@ -121,7 +121,7 @@ export default {
     },
     refreshKlineData(option) {
       console.log(option)
-      this.requestData()
+      this.requestData();
       // if (option === 300000) { //如果时间等于15分钟
       //   this.requestData();
       // }
@@ -142,6 +142,8 @@ export default {
                 quantity: 0,
                 value: 0,
                 profit: 0,
+                cost: 0,
+                earn: 0,
               }
             ]
           }
@@ -150,29 +152,43 @@ export default {
         }
       })
     },
-    buy() {
-      buyStock(this.stockId, this.buyNum).then(() => {
+    // buy() {
+    //   buyStock(this.stockId, this.buyNum).then(() => {
+    //     this.$message.success("Stock purchase successful");
+    //   }).catch((err) => {
+    //     console.log(err);
+    //     this.$message({
+    //       message: 'Not enough balance',
+    //       type: 'warning'
+    //     });
+    //   })
+    //   this.getInfo();
+    // },
+    async buy() {
+      try {
+        await buyStock(this.stockId, this.buyNum);
         this.$message.success("Stock purchase successful");
-      }).catch((err) => {
-        console.log(err);
+        await this.getInfo(); // 等待 getInfo 执行完成
+      } catch (err) {
+        console.error(err);
         this.$message({
           message: 'Not enough balance',
           type: 'warning'
         });
-      })
-      this.getInfo();
+      }
     },
-    sell() {
-      sellStock(this.stockId, this.sellNum).then(() => {
-        this.$message.success("Stock sale successful");
-      }).catch((err) => {
-        console.log(err);
+    async sell() {
+      try {
+        await sellStock(this.stockId, this.sellNum);
+        this.$message.success("Stock purchase successful");
+        await this.getInfo(); // 等待 getInfo 执行完成
+      } catch (err) {
+        console.error(err);
         this.$message({
-          message: 'Not enough shares',
+          message: 'Not enough share',
           type: 'warning'
         });
-      })
-      this.getInfo();
+      }
     },
   },
 }
