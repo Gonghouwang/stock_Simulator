@@ -121,9 +121,10 @@ export default {
     },
     refreshKlineData(option) {
       console.log(option)
-      if (option === 300000) { //如果时间等于15分钟
-        this.requestData();
-      }
+      this.requestData()
+      // if (option === 300000) { //如果时间等于15分钟
+      //   this.requestData();
+      // }
     },
     getStockInfo() {
       stockHistory(this.stockIdStr).then(res => {
