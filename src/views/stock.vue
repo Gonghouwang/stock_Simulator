@@ -12,9 +12,12 @@
         <div class="info">
           <span style="font-weight: bold">账户信息 </span>
           <span>余额: {{ tradeInfo.balance }}</span>
+          <span>当前股价: {{ stockInfo.price}}</span>
           <span>持股数量: {{ tradeInfo.tradeInfo[0].quantity }}</span>
-          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value }}</span>
-          <span>持仓盈亏: {{ tradeInfo.tradeInfo[0].profit }}</span>
+          <span>持仓市值: {{ tradeInfo.tradeInfo[0].value.toFixed(2) }}</span>
+          <span>总投入: {{ tradeInfo.tradeInfo[0].cost.toFixed(2) }}</span>
+          <span>获利: {{ tradeInfo.tradeInfo[0].earn.toFixed(2) }}</span>
+          <span>总盈亏: {{ (tradeInfo.tradeInfo[0].profit).toFixed(2) }}</span>
         </div>
       </div>
       <div class="trade">
