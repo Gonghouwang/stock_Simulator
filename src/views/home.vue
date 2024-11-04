@@ -49,9 +49,9 @@ export default {
     return {
       stocks: [],
       isLoading: true,
-      searchCode: '',
-      searchName: '',
-      currentPage: 1,
+      searchCode: localStorage.getItem('stockCode')&&localStorage.getItem('stockCode')!=='null'? localStorage.getItem('stockCode') :'',
+      searchName: localStorage.getItem('stockName')&&localStorage.getItem('stockName')!=='null'? localStorage.getItem('stockName') :'',
+      currentPage: localStorage.getItem('currentPage')&&localStorage.getItem('currentPage')!=='null'?Number(localStorage.getItem('currentPage')):1 ,
       pageSize: 10,
       total: 0
     };
@@ -80,6 +80,12 @@ export default {
         this.total = response.data.total;
         this.isLoading = false;
       });
+      this.saveSearchParams();
+      },
+    saveSearchParams() {
+      localStorage.setItem('stockName', this.searchName);
+      localStorage.setItem('stockCode', this.searchCode);
+      localStorage.setItem('currentPage', this.currentPage);
     },
     goDetail(stockId) {
       this.$router.push({ path: `/stock/${stockId}` });
