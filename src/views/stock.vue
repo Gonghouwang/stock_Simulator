@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <nav-menu></nav-menu>
     <div class="stock-container">
       <div class="stock">
@@ -23,16 +23,26 @@
       <div class="trade">
         <span style="font-weight: bold">股票交易</span>
         <div>
-          <!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">买入股票</span>-->
           <el-input-number v-model="buyNum" :min="1" size="small"></el-input-number>
           <el-button type="primary" size="small" plain @click="buy()">买入股票</el-button>
         </div>
         <div>
-          <!--          <span style="font-weight: bold; font-size: 14px; margin-right: 15px">卖出股票</span>-->
           <el-input-number v-model="sellNum" :min="1" size="small"></el-input-number>
           <el-button type="primary" size="small" plain @click="sell()">卖出股票</el-button>
         </div>
       </div>
+    </div>
+
+    <!-- ChatGPT 聊天界面 -->
+    <div class="chat-container">
+      <el-divider content-position="left"><span style="font-size: 18px; font-weight: bold">聊天助手</span></el-divider>
+      <div class="chat-messages">
+        <div v-for="(msg, index) in chatMessages" :key="index" :class="{'user-message': msg.isUser, 'assistant-message': !msg.isUser}">
+          {{ msg.text }}
+        </div>
+      </div>
+      <el-input v-model="userInput" placeholder="请输入消息..." @keyup.enter="sendMessage"></el-input>
+      <el-button type="primary" @click="sendMessage">发送</el-button>
     </div>
   </div>
 </template>
@@ -40,9 +50,9 @@
 <script>
 import navMenu from "@/components/navmenu.vue";
 import vueKline from "vue-kline";
-import {userStockInfo} from "@/api/user"
-import {buyStock, sellStock} from "@/api/trade"
-import {stockHistory} from "@/api/stock";
+import { userStockInfo } from "@/api/user";
+import { buyStock, sellStock } from "@/api/trade";
+import { stockHistory } from "@/api/stock";
 
 export default {
   name: "stockPage",
@@ -63,13 +73,15 @@ export default {
       klineParams: {
         width: 920,
         height: 400,
-        theme: "light",            // 主题颜色
-        language: "zh-cn",        //语言
-        ranges: ["1d", "2h", "30m", "5m"],  // 聚合选项
-        intervalTime: 3000,       // k线更新周期 毫秒
-        depthWidth: 50,           // 深度图宽度
-        count: 2                  //显示指标数量 默认两个
-      }
+        theme: "light",
+        language: "zh-cn",
+        ranges: ["1d", "2h", "30m", "5m"],
+        intervalTime: 3000,
+        depthWidth: 50,
+        count: 2
+      },
+      chatMessages: [],  // 聊天记录
+      userInput: "",     // 用户输入
     }
   },
   created() {
@@ -87,7 +99,7 @@ export default {
       stockHistory(this.stockIdStr).then(res => {
         this.klineData = {
           lines: res.data.klines.lines.map(line => [
-            new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
+            new Date(line.time).getTime().toExponential(8),
             line.openPrice,
             line.maxPrice,
             line.minPrice,
@@ -106,15 +118,14 @@ export default {
           }
         }
         this.$nextTick(() => {
-          console.log("nextTick")
           this.$refs.callMethods.kline.chartMgr.getChart().updateDataAndDisplay(res.data.klines.lines.map(line => [
-            new Date(line.time).getTime().toExponential(8), // 转为毫秒的时间戳
+            new Date(line.time).getTime().toExponential(8),
             line.openPrice,
             line.maxPrice,
             line.minPrice,
             line.closePrice,
             line.volume
-          ])); //强制更改缓存中的lines值,防止显示不同步
+          ]));
         });
       })
       this.isLoading = false;
@@ -122,9 +133,6 @@ export default {
     refreshKlineData(option) {
       console.log(option)
       this.requestData();
-      // if (option === 300000) { //如果时间等于15分钟
-      //   this.requestData();
-      // }
     },
     getStockInfo() {
       stockHistory(this.stockIdStr).then(res => {
@@ -133,61 +141,62 @@ export default {
     },
     getInfo() {
       userStockInfo(this.stockIdStr).then(res => {
-        if (res.data.tradeInfo.length === 0) {
-          this.tradeInfo = {
-            userName: res.data.userName,
-            balance: res.data.balance,
-            tradeInfo: [
-              {
-                quantity: 0,
-                value: 0,
-                profit: 0,
-                cost: 0,
-                earn: 0,
-              }
-            ]
-          }
-        } else {
-          this.tradeInfo = res.data
-        }
+        this.tradeInfo = res.data.tradeInfo.length === 0 ? {
+          userName: res.data.userName,
+          balance: res.data.balance,
+          tradeInfo: [{
+            quantity: 0,
+            value: 0,
+            profit: 0,
+            cost: 0,
+            earn: 0,
+          }]
+        } : res.data;
       })
     },
-    // buy() {
-    //   buyStock(this.stockId, this.buyNum).then(() => {
-    //     this.$message.success("Stock purchase successful");
-    //   }).catch((err) => {
-    //     console.log(err);
-    //     this.$message({
-    //       message: 'Not enough balance',
-    //       type: 'warning'
-    //     });
-    //   })
-    //   this.getInfo();
-    // },
+    async sendMessage() {
+      this.chatMessages.push({text: this.userInput, isUser: true});
+      const userMessage = this.userInput;
+      this.userInput = "";
+
+      try {
+        const response = await fetch("https://api.chatanywhere.tech/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer sk-5HrY9HDaxQBx1dPDTUozf0mQ6MKwbUZlhZ8BjkRBeUia1QMb`
+          },
+          body: JSON.stringify({
+            model: "gpt-4",
+            messages: [{role: "user", content: userMessage}]
+          })
+        });
+        const data = await response.json();
+        const assistantMessage = data.choices[0].message.content;
+        this.chatMessages.push({text: assistantMessage, isUser: false});
+      } catch (error) {
+        console.error("Error fetching response:", error);
+        this.chatMessages.push({text: "助手暂时无法回复，请稍后再试。", isUser: false});
+      }
+    },
     async buy() {
       try {
         await buyStock(this.stockId, this.buyNum);
         this.$message.success("Stock purchase successful");
-        await this.getInfo(); // 等待 getInfo 执行完成
+        await this.getInfo();
       } catch (err) {
         console.error(err);
-        this.$message({
-          message: 'Not enough balance',
-          type: 'warning'
-        });
+        this.$message({message: 'Not enough balance', type: 'warning'});
       }
     },
     async sell() {
       try {
         await sellStock(this.stockId, this.sellNum);
         this.$message.success("Stock purchase successful");
-        await this.getInfo(); // 等待 getInfo 执行完成
+        await this.getInfo();
       } catch (err) {
         console.error(err);
-        this.$message({
-          message: 'Not enough share',
-          type: 'warning'
-        });
+        this.$message({message: 'Not enough share', type: 'warning'});
       }
     },
   },
@@ -233,5 +242,34 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+
+.chat-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.chat-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  text-align: right;
+  background-color: #e1f5fe;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.assistant-message {
+  text-align: left;
+  background-color: #ffe0b2;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px 0;
 }
 </style>
