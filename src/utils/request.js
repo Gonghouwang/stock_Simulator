@@ -4,7 +4,7 @@ import router from "@/router";
 // 创建 axios 实例
 const service = axios.create({
     baseURL: 'http://47.115.213.200:8081/api', // 后端的基础请求地址
-    timeout: 5000 // 请求超时时间
+    timeout: 10000 // 请求超时时间
 });
 
 // 请求拦截器
@@ -20,8 +20,9 @@ service.interceptors.request.use(
         return config;
     },
     (error) => {
-        // 处理请求错误
-        return Promise.reject(error);
+        console.log(error)
+        // 可以在这里统一处理响应错误
+        console.error("服务器异常！");
     }
 );
 
@@ -31,12 +32,16 @@ service.interceptors.response.use(
         if (response.status===401){
             router.push('/login');
         }
+        if (response.status===500){
+            console.error("服务器异常！");
+        }
         // 可以在这里统一处理响应数据
         return response.data;
     },
     (error) => {
+        console.log(error)
         // 可以在这里统一处理响应错误
-        return Promise.reject(error);
+        console.error("服务器异常！");
     }
 );
 

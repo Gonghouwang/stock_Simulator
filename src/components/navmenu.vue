@@ -47,7 +47,11 @@
           </button>
         </div>
       </el-col>
+
     </el-menu>
+    <el-col span="24" style="text-align: center; margin-top: 10px;">
+      <div class="current-time">{{ currentTime.replace(/\//g, '-') }}</div>
+    </el-col>
   </el-row>
 </template>
 
@@ -56,10 +60,20 @@ export default {
   name: "navMenu",
   data(){
     return{
-
+      currentTime: ''
     }
   },
+  created() {
+    this.$store.dispatch('loadUser');
+    this.updateTime(); // 立即更新一次时间
+    setInterval(this.updateTime, 1000); // 每秒更新
+  },
   methods:{
+    updateTime() {
+      const now = new Date();
+      this.currentTime = now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+      console.log("Current Time:", this.currentTime); // 调试输出
+    },
     goHome() {
       confirm("back home!");
       this.$router.push({ path: `/` });
