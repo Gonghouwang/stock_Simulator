@@ -20,9 +20,11 @@ service.interceptors.request.use(
         return config;
     },
     (error) => {
+        this.$message({
+            message: '服务器异常',
+            type: 'error'
+        });
         console.log(error)
-        // 可以在这里统一处理响应错误
-        console.error("服务器异常！");
     }
 );
 
@@ -33,7 +35,10 @@ service.interceptors.response.use(
             router.push('/login');
         }
         if (response.status===500){
-            console.error("服务器异常！");
+            this.$message({
+                message: '服务器异常',
+                type: 'error'
+            });
         }
         // 可以在这里统一处理响应数据
         return response.data;

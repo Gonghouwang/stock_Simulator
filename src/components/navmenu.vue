@@ -9,11 +9,11 @@
         <el-menu-item index="/" style="margin-left: 2vw">home</el-menu-item>
         <el-menu-item index="/news">news</el-menu-item>
       </el-col>
-      <el-col span="8" style="display: flex; justify-content: center; "  @click.stop="goHome()">
+      <el-col span="8" style="display: flex; justify-content: center; "  >
         <div>
-          <img class="stock-name-link" src="../assets/logo.svg" alt="logo" style="padding-top: 12px; color: #409EFF">
+          <img  @click="goHome" class="stock-name-link" src="../assets/logo.svg" alt="logo" style="padding-top: 12px; color: #409EFF">
         </div>
-        <span style="padding-top: 14px; padding-left: 10px; display: flex">SmartStockSim</span>
+        <span style="padding-top: 14px; padding-left: 10px; display: flex"  class="stock-name-link" @click="goHome">SmartStockSim</span>
       </el-col>
       <el-col span="8" style="display: flex; justify-content: flex-end; ">
         <div class="button-container">
@@ -51,6 +51,15 @@
     </el-menu>
     <el-col span="24" style="text-align: center; margin-top: 10px;">
       <div class="current-time">{{ currentTime.replace(/\//g, '-') }}</div>
+      <div>
+        <span
+            :style="{ color: marketStatusColor }"
+            @click="showMarketTime"
+            style="cursor: pointer;"
+        >
+          市场状态: {{ marketStatus }}
+        </span>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -69,15 +78,23 @@ export default {
     setInterval(this.updateTime, 1000); // 每秒更新
   },
   methods:{
-    updateTime() {
-      const now = new Date();
-      this.currentTime = now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-      console.log("Current Time:", this.currentTime); // 调试输出
-    },
     goHome() {
-      confirm("back home!");
       this.$router.push({ path: `/` });
     },
+    showMarketTime() {
+      if (this.marketStatus === "开市") {
+        this.$message({
+          message: '开市时间范围: 上午9:35到11:30，下午1:05到3:00',
+          type: 'success'
+        });
+      } else {
+        this.$message({
+          message: '开市时间范围: 上午9:35到11:30，下午1:05到3:00',
+          type: 'info'
+        });
+      }
+    }
+,
     logout(){
       if(confirm("Are you sure you want to logout?")){
         this.$store.commit('logout');
@@ -88,6 +105,36 @@ export default {
     },
     goUser(){
       this.$router.push('/user')
+    },
+    updateTime() {
+      const now = new Date();
+      this.currentTime = now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+      console.log("Current Time:", this.currentTime); // 调试输出
+    },
+  }
+
+,
+  computed: {
+    marketStatus() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const currentTime = hours * 60 + minutes;
+
+      const marketOpenMorning = 9 * 60 + 35;
+      const marketCloseMorning = 11 * 60 + 30;
+      const marketOpenAfternoon = 13 * 60 + 5;
+      const marketCloseAfternoon = 15 * 60;
+
+      if ((currentTime >= marketOpenMorning && currentTime <= marketCloseMorning) ||
+          (currentTime >= marketOpenAfternoon && currentTime < marketCloseAfternoon)) {
+        return "上市";
+      } else {
+        return "休市";
+      }
+    },
+    marketStatusColor() {
+      return this.marketStatus === "上市" ? "red" : "blue";
     }
   }
 }
