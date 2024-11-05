@@ -18,7 +18,7 @@
           <p class="info">今高 {{ stock.maxPrice }}</p>
           <p class="info">今低 {{ stock.minPrice }}</p>
           <p class="info">今日成交量 {{ stock.volume }}</p>
-          <span class="change-percent" :class="priceClass(stock)">{{ stock.changePercent }}%</span>
+          <span class="change-percent" :class="priceClass(stock)">{{ stock.changePercent.toFixed(2) }}%</span>
         </div>
       </el-card>
     </div>
@@ -57,7 +57,7 @@ export default {
     };
   },
   created() {
-    this.getStockList();
+    this.getStockList(false);
   },
   methods: {
     priceClass(stock) {
@@ -67,7 +67,10 @@ export default {
         return 'price-up';
       }
     },
-    getStockList() {
+    getStockList(resetPage=true) {
+      if (resetPage) {
+        this.currentPage = 1; // 仅在手动搜索时重置页码
+      }
       this.isLoading = true;
       const params = {
         page: this.currentPage,
@@ -92,7 +95,7 @@ export default {
     },
     handlePageChange(page) {
       this.currentPage = page;
-      this.getStockList();
+      this.getStockList(false);
     }
   }
 }

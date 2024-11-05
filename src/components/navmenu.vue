@@ -128,13 +128,13 @@ export default {
 
       if ((currentTime >= marketOpenMorning && currentTime <= marketCloseMorning) ||
           (currentTime >= marketOpenAfternoon && currentTime < marketCloseAfternoon)) {
-        return "上市";
+        return "开市";
       } else {
         return "休市";
       }
     },
     marketStatusColor() {
-      return this.marketStatus === "上市" ? "red" : "blue";
+      return this.marketStatus === "开市" ? "red" : "blue";
     }
   }
 }

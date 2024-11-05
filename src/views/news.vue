@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    this.searchNews();
+    this.searchNews(false);
   },
   methods: {
     getNewsList() {
@@ -68,7 +68,10 @@ export default {
         this.filteredArticles = this.articles; // 初始化时将所有文章存储
       });
     },
-    searchNews() {
+    searchNews(resetPage = true) {
+      if (resetPage) {
+        this.currentPage = 1; // 仅在手动搜索时重置页码
+      }
       this.getNewsList().then(() => {
         this.filteredArticles = this.articles.filter(article => {
           const articleDate = new Date(article.publishedAt);
